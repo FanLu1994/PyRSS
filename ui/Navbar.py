@@ -14,18 +14,21 @@ class Navbar(QWidget):
     def __init__(self):
         super(Navbar, self).__init__()
         self.addButton = QPushButton("添加订阅")
+        self.cancleSubButton = QPushButton("取消订阅")
         self.collectButton = QPushButton("收藏")
         self.shareButton = QPushButton("分享")
         self._initButton()
         self._initUI()
 
     def _initButton(self):
-        self.addButton = QPushButton(QIcon("../assets/add.png"),"添加订阅")
-        self.collectButton = QPushButton(QIcon("../assets/collect.png"),"收藏")
-        self.shareButton = QPushButton(QIcon("../assets/share.png"),"分享")
+        self.addButton = QPushButton(QIcon("assets/add.png"),"添加订阅")
+        self.collectButton = QPushButton(QIcon("assets/collect.png"),"收藏")
+        self.shareButton = QPushButton(QIcon("assets/share.png"),"分享")
+        self.cancleSubButton = QPushButton(QIcon("assets/cancle.png"),"取消订阅")
         self.addButton.setFixedHeight(20)
         self.collectButton.setFixedHeight(20)
         self.shareButton.setFixedHeight(20)
+        self.cancleSubButton.setFixedHeight(20)
 
     def _initUI(self):
         self.resize(200,640)
@@ -44,25 +47,18 @@ class Navbar(QWidget):
         vLayout.addWidget(self.addButton)
         vLayout.addWidget(self.collectButton)
         vLayout.addWidget(self.shareButton)
+        vLayout.addWidget(self.cancleSubButton)
         vLayout.setContentsMargins(2,2,2,2)
 
         self.setLayout(vLayout)
         # self.show()
-
-    # 列表添加点击事件
-    def setClickedFunction(self,func):
-        self.blogSelector.activated.connect(func)
-
-    # 博客点击事件
-    def setArticleSelectFunction(self,func):
-        self.blogList.clicked.connect(func)
-
 
     # 更新博客列表
     def updateBlogList(self, blogList: List[RssSubInfo]):
         blogNames = []
         for blog in blogList:
             blogNames.append(blog.title)
+        self.blogSelector.clear()
         self.blogSelector.addItems(blogNames)
 
     # 更新文章列表
@@ -72,6 +68,37 @@ class Navbar(QWidget):
             articleNames.appendRow(QStandardItem(article.title))
 
         self.blogList.setModel(articleNames)
+
+    # 列表添加点击事件
+    def setClickedFunction(self,func):
+        self.blogSelector.activated.connect(func)
+
+    # 博客点击事件
+    def setArticleSelectFunction(self,func):
+        self.blogList.clicked.connect(func)
+
+    # 删除订阅点击事件
+    def setCancleSubButtonClickFunction(self,func):
+        self.cancleSubButton.clicked.connect(func)
+
+    # 分享事件
+    def setShareButtonClickFunction(self,func):
+        self.shareButton.clicked.connect(func)
+
+    # 收藏点击事件
+    def setCollectButtonClickFunction(self,func):
+        self.collectButton.clicked.connect(func)
+
+    # 添加点击事件
+    def setAddButtonClickFunction(self,func):
+        self.addButton.clicked.connect(func)
+
+    # 设置当前选项
+    def setCurrentBlog(self,index):
+        self.blogSelector.setCurrentIndex(index)
+
+
+
 
 
 

@@ -4,6 +4,7 @@
 
 import sys
 
+from PyQt5 import QtGui
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QWidget, QApplication, \
@@ -32,20 +33,20 @@ class AddBlogDialog(QWidget):
         gLayout.setRowStretch(3,1)
         gLayout.setRowStretch(4,1)
 
-        urlInputBox = QLineEdit()
-        confirmBtn = QPushButton("确认")
-        quitButton = QPushButton(QIcon("../assets/quit.png"),"")
+        self.urlInputBox = QLineEdit()
+        self.confirmBtn = QPushButton("确认")
+        quitButton = QPushButton(QIcon("assets/quit.png"),"")
 
         quitButton.clicked.connect(self.close)
         quitButton.setFlat(True)
         # quitButton.setMaximumSize(QSize(50,50))
 
-        resultLabel = QLabel("success")
+        self.resultLabel = QLabel("")
 
         gLayout.addWidget(quitButton,0,4,)
-        gLayout.addWidget(urlInputBox,2,1,1,3)
-        gLayout.addWidget(resultLabel,3,1,1,1)
-        gLayout.addWidget(confirmBtn,3,3,1,1)
+        gLayout.addWidget(self.urlInputBox,2,1,1,3)
+        gLayout.addWidget(self.resultLabel,3,1,1,1)
+        gLayout.addWidget(self.confirmBtn,3,3,1,1)
         gLayout.setContentsMargins(2,2,2,2)
 
         self.setWindowFlags(Qt.FramelessWindowHint)
@@ -60,6 +61,27 @@ class AddBlogDialog(QWidget):
     def _setResult(self):
         pass
 
+    # 获取输入框的内容
+    def getInputContent(self):
+        return self.urlInputBox.text()
+
+    # 确认按钮点击事件
+    def setConfirmButtonClickFunction(self,func):
+        self.confirmBtn.clicked.connect(func)
+
+    # 设置检查结果
+    def setConfirmResult(self,isSuccess):
+        if isSuccess:
+            self.resultLabel.setText("成功")
+            self.resultLabel.setStyleSheet("color:green;")
+        else:
+            self.resultLabel.setText("无法识别的地址")
+            self.resultLabel.setStyleSheet("color:red;")
+
+    # 窗口关闭事件
+    def closeEvent(self, a0: QtGui.QCloseEvent) -> None:
+        self.resultLabel.setText('')
+        self.urlInputBox.setText('')
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
