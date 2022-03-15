@@ -89,6 +89,9 @@ class PyRSSMainWindow(QMainWindow):
     def _initBlogList(self):
         try:
             self.blogList = rssService.QueryAllRss()
+            self.blogList.append(RssSubInfo(
+                title='收藏'
+            ))
             self.navBar.updateBlogList(self.blogList)
             if len(self.blogList) > 0:
                 self._onSelectBlog(0)
@@ -103,11 +106,9 @@ class PyRSSMainWindow(QMainWindow):
                                   '')
         QMessageBox.information(self, "提示", "收藏成功")
 
-
-
     def _shareArticle(self):
         try:
-            QGuiApplication.clipboard().setText( f"{self.currentArticle} \n分享来自PyRSS", mode=QClipboard.Clipboard)
+            QGuiApplication.clipboard().setText(f"{self.currentArticle} \n分享来自PyRSS", mode=QClipboard.Clipboard)
             QMessageBox.information(self, "提示", "已复制到剪贴板")
         except Exception as e:
             print(e)
@@ -117,6 +118,10 @@ class PyRSSMainWindow(QMainWindow):
     # 博客选择回调事件
     def _onSelectBlog(self, index):
         self.currentBlog = self.blogList[index]
+        if self.currentBlog.title == "收藏":
+            self._showCollectArticles()
+            return
+
         try:
             articleList = rssService.GetArticles(self.blogList[index])
             self.articleList = articleList
@@ -142,6 +147,9 @@ class PyRSSMainWindow(QMainWindow):
 
     # 删除订阅响应事件
     def _onClickCancelSub(self):
+        if self.currentBlog.title == "收藏":
+            return
+
         result = QMessageBox.warning(self, "提示", "确定取消订阅？", QMessageBox.Yes, QMessageBox.No)
         if result == QMessageBox.Yes:
             rssService.DelRss(self.currentBlog)
@@ -159,13 +167,20 @@ class PyRSSMainWindow(QMainWindow):
             result = requestSession.get(rssUrl, verify=False, timeout=5).text
             dom = feedparser.parse(result)
             self.addBlogDialog.setConfirmResult(isSuccess=True)
-            rssService.AddRss(dom['feed']['title'],url=rssUrl)
+            rssService.AddRss(dom['feed']['title'], url=rssUrl)
             self._initBlogList()
-            self.navBar.setCurrentBlog(len(self.blogList)-1)
-            self._onSelectBlog(len(self.blogList)-1)
+            self.navBar.setCurrentBlog(len(self.blogList) - 1)
+            self._onSelectBlog(len(self.blogList) - 1)
         except Exception as e:
             print(e)
             self.addBlogDialog.setConfirmResult(isSuccess=False)
+
+    def _showCollectArticles(self):
+        self.articleList = articleService.QueryAllArticles()
+        self.navBar.updateArticleList(self.articleList)
+        if len(self.articleList) > 0:
+            self.currentArticle = self.articleList[0].url
+            self.blogContent.setUrl(self.currentArticle)
 
 
 if __name__ == '__main__':

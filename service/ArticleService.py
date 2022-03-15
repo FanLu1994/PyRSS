@@ -24,3 +24,7 @@ class ArticleService:
             session.commit()
         except Exception as e:
             print(e)
+
+    # 获取所有rss
+    def QueryAllArticles(self):
+        return session.query(RssArticle).all()
