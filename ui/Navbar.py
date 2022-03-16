@@ -3,12 +3,14 @@
 import sys
 from typing import List
 
-from PyQt5.QtGui import QFont, QIcon, QStandardItem, QStandardItemModel
+from PyQt5.QtGui import QFont, QIcon, QStandardItem, QStandardItemModel, QPixmap
 from PyQt5.QtWidgets import QWidget, QApplication, QComboBox, \
     QListView, QVBoxLayout, QPushButton, QMessageBox, QAbstractItemView
 from qt_material import apply_stylesheet
 from model.model import RssSubInfo, Article
 from ui.AddBlogDialog import AddBlogDialog
+from util import imageSource
+
 
 class Navbar(QWidget):
     def __init__(self):
@@ -21,10 +23,16 @@ class Navbar(QWidget):
         self._initUI()
 
     def _initButton(self):
-        self.addButton = QPushButton(QIcon("assets/add.png"),"添加订阅")
-        self.collectButton = QPushButton(QIcon("assets/collect.png"),"收藏")
-        self.shareButton = QPushButton(QIcon("assets/share.png"),"分享")
-        self.cancleSubButton = QPushButton(QIcon("assets/cancle.png"),"取消订阅")
+        addIcon , collectIcon , shareIcon , cancleIcon = QPixmap(),QPixmap(),QPixmap(),QPixmap()
+        addIcon.loadFromData(imageSource.fromBase64(imageSource.addPNG))
+        collectIcon.loadFromData(imageSource.fromBase64(imageSource.collectPNG))
+        shareIcon.loadFromData(imageSource.fromBase64(imageSource.sharePNG))
+        cancleIcon.loadFromData(imageSource.fromBase64(imageSource.canclePNG))
+
+        self.addButton = QPushButton(QIcon(addIcon),"添加订阅")
+        self.collectButton = QPushButton(QIcon(collectIcon),"收藏")
+        self.shareButton = QPushButton(QIcon(shareIcon),"分享")
+        self.cancleSubButton = QPushButton(QIcon(cancleIcon),"取消订阅")
         self.addButton.setFixedHeight(20)
         self.collectButton.setFixedHeight(20)
         self.shareButton.setFixedHeight(20)

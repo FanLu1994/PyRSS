@@ -11,7 +11,7 @@ from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QVBoxLayout, \
     QComboBox, QListView, QApplication, QDesktopWidget, \
     QPushButton, QWidget, QAction, QMenu, QMessageBox
 from PyQt5.QtWebEngineWidgets import QWebEngineView
-from PyQt5.QtGui import QIcon, QClipboard, QGuiApplication
+from PyQt5.QtGui import QIcon, QClipboard, QGuiApplication, QPixmap
 from PyQt5 import QtWidgets, QtGui
 from qt_material import apply_stylesheet
 import traceback
@@ -22,6 +22,7 @@ from ui.BlogContent import BlogContent
 from ui.Navbar import Navbar
 from ui.AddBlogDialog import AddBlogDialog
 from service.RssService import RssService
+from util import imageSource
 
 rssService = RssService()
 articleService = ArticleService()
@@ -68,7 +69,10 @@ class PyRSSMainWindow(QMainWindow):
         self.setCentralWidget(self.centerWidget)
         self.resize(1320, 640)
         self._center()
-        self.setWindowIcon(QIcon("assets/read.png"))
+
+        icon = QPixmap()
+        icon.loadFromData(imageSource.fromBase64(imageSource.readPNG))
+        self.setWindowIcon(QIcon(icon))
         self.setWindowTitle("PyRSS")
 
     # 暂时关闭

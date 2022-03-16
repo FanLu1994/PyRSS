@@ -6,11 +6,13 @@ import sys
 
 from PyQt5 import QtGui
 from PyQt5.QtCore import Qt, QSize
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import QWidget, QApplication, \
     QComboBox, QListView,QVBoxLayout,QLineEdit,QGridLayout,QPushButton,QLabel
 
 from qt_material import apply_stylesheet
+
+from util import imageSource
 
 
 class AddBlogDialog(QWidget):
@@ -35,7 +37,9 @@ class AddBlogDialog(QWidget):
 
         self.urlInputBox = QLineEdit()
         self.confirmBtn = QPushButton("确认")
-        quitButton = QPushButton(QIcon("assets/quit.png"),"")
+        icon = QPixmap()
+        icon.loadFromData(imageSource.fromBase64(imageSource.quitPNG))
+        quitButton = QPushButton(QIcon(icon),"")
 
         quitButton.clicked.connect(self.close)
         quitButton.setFlat(True)
@@ -52,7 +56,9 @@ class AddBlogDialog(QWidget):
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setLayout(gLayout)
         self.setWindowTitle("添加订阅")
-        self.setWindowIcon(QIcon("../assets/add.png"))
+        icon = QPixmap()
+        icon.loadFromData(imageSource.fromBase64(imageSource.addPNG))
+        self.setWindowIcon(QIcon(icon))
 
     def _checkUrl(self):
         pass
